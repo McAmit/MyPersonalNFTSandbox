@@ -1,0 +1,33 @@
+{
+  "name": "decentraland",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@alch/alchemy-web3": "^1.4.6",
+    "@metamask/onboarding": "^1.0.1",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
+    "@openzeppelin/contracts": "^4.7.0",
+    "dotenv": "^16.0.1",
+    "next": "^12.1.6",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "reactjs-popup": "^2.0.5",
+    "web3": "^1.7.4"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.1.0",
+    "eslint": "8.18.0",
+    "eslint-config-next": "12.1.6",
+    "ethers": "^5.0.0",
+    "hardhat": "^2.9.9",
+    "reactjs-popup": "^2.0.5",
+    "sass": "^1.53.0",
+    "webpack": "^5.73.0"
+  }
+}
