@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Land from "./Land.js"
+import { MapInteractionCSS } from 'react-map-interaction';
 
 function Lands() {
     let uKeytd = 0 // unique key - td

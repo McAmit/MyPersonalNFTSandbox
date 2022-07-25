@@ -6941,7 +6941,7 @@
     "is-fn" "^1.0.0"
     "set-immediate-shim" "^1.0.1"
 
-"prop-types@^15.8.1":
+"prop-types@^15.8.1", "prop-types@>=15.0.0":
   "integrity" "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   "version" "15.8.1"
@@ -7136,7 +7136,12 @@
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
   "version" "16.13.1"
 
-"react@^17.0.2 || ^18.0.0-0", "react@^18.2.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", "react@>=16", "react@18.2.0":
+"react-map-interaction@^2.1.0":
+  "integrity" "sha512-bD6Gz2nuf60HF4WAYfBOjsqttrFlTd1u/TrCQSxdl3KITiTpTxr1vvLIr1k+NR2w3Jln+gux+oWDbjnh8Dhv7w=="
+  "resolved" "https://registry.npmjs.org/react-map-interaction/-/react-map-interaction-2.1.0.tgz"
+  "version" "2.1.0"
+
+"react@^17.0.2 || ^18.0.0-0", "react@^18.2.0", "react@>= 16.8.0 || 17.x.x || ^18.0.0-0", "react@>=16", "react@>=16.3.0", "react@18.2.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   "version" "18.2.0"
