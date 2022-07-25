@@ -10,7 +10,7 @@ function Lands() {
     function createRowLands(x, totalRowLands){
         let landsByRow = []
         for (let y = 0; y < totalRowLands; y++, uKeytd++) {
-            landsByRow.push(<Land x={x} y={y} uKeytd={uKeytd} key={"land"+uKeytd}></Land>)
+            landsByRow.push(<Land x={x} y={y} uKeytd={uKeytd} key={"land"+uKeytd} rowLength={totalRowLands}></Land>)
         }
         lands.push(landsByRow)
     }

@@ -12,7 +12,6 @@ const contract = require("../artifacts/contracts/DANFT.sol/DANFT.json")
 //console.log(JSON.stringify(contract.abi))  //print the ABI
 const contractAddress = "0x07cbB679880C96329cB491321B9aAdE218fb8Fb9"
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress)
-
 async function mintNFT(tokenURI){
     const nonce = await web3.eth.getTransactionCount(PUBLIC_KEY, 'latest');
 
@@ -36,6 +35,7 @@ async function mintNFT(tokenURI){
                   hash,
                   "\nCheck Alchemy's Mempool to view the status of your transaction!"
                 )
+                return true;
               } else {
                 console.log(
                   "Something went wrong when submitting your transaction:",
@@ -47,7 +47,14 @@ async function mintNFT(tokenURI){
         })
         .catch((err) => {
           console.log(" Promise failed:", err)
+          return false;
         })
 }
 
-mintNFT("https://gateway.pinata.cloud/ipfs/QmPFZM2kwV4BUy8ptQoPYydG3vnyQiNeQfF7D8p8HhSDYf")
+for(let i=3;i<2500;){
+  if(mintNFT("https://gateway.pinata.cloud/ipfs/QmPFZM2kwV4BUy8ptQoPYydG3vnyQiNeQfF7D8p8HhSDYf")){
+    i++
+    console.log("NFT #%d has been minted",i)
+  }
+
+}

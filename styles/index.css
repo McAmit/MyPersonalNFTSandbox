@@ -14,13 +14,13 @@
 } 
 
 .td, .th{
-  border: 1px solid #ddd;
-  padding: 3px;
+  border: 2px solid #ddd;
+  padding: 50px;
 }
 
 .button {
-  background-color: black;
-  padding: 15px 5px;
+  background-color: rgb(66, 65, 65);
+  padding: 50px 50px;
   cursor: pointer;
 }
 
@@ -37,6 +37,6 @@
 }
 
 .button {
-  color: #cfcece;
+  color: #c03434;
 }
 

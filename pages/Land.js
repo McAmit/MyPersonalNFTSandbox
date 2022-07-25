@@ -1,7 +1,8 @@
 import React from 'react'
 import Popup from 'reactjs-popup';
 
-function Land({x, y, uKeytd}) {
+
+function Land({x, y, uKeytd,rowLength,address}) {
 
     const PopUp = () => (
         <Popup id="popup"
@@ -18,7 +19,9 @@ function Land({x, y, uKeytd}) {
               <div className="content">
                 <b>Index Location:</b> ({x}, {y})
                 <br></br>
-                <b>Owner: </b>No Owner
+                <b>ID: </b>#{x*rowLength+y+1}
+                <br></br>
+                <b>Owner: </b>{address}
                 <br></br>
                 <b>Price: </b>100$
                 <br></br>
@@ -70,7 +73,7 @@ function Land({x, y, uKeytd}) {
         }
         // can't insert NFT on PARKS(green):
         else if((x>10 & x<20 & y>10 & y<20) | (x>26 & x<37 & y>26 & y<37)
-        | (x>6 & x<10 & y>36 & y<40)){ 
+        | (x>6 & x<10 & y>36 & y<40)|(y===9 & x<=49 &x>36) |(x>41 &x<48 &y>41 &y<48)|(x>20 &x<27 &y>41 &y<48 | x>20 & x<29 & y >2 & y<7) ){ 
             return (<td className='td' id="green" key={"td"+uKeytd}></td>)
         }
         // insert NFT:
