@@ -1,4 +1,5 @@
 import Lands from './Lands'
+import LandMap from './landMap.js';
 import Instructions from "./instructions"
 import Login from "./Login"
 
@@ -11,7 +12,7 @@ function App() {
       </header>
        <Login/> {/*Need to implement the users: buyer, seller and guest 
        <Instructions/> */}
-      <Lands/>
+      <LandMap/>
     </div>
   );
 }
