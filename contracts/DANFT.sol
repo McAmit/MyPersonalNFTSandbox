@@ -13,7 +13,7 @@ contract DANFT is ERC721URIStorage, Ownable {
     uint maxIndex = 2500;
 
     constructor() ERC721("LandNFT", "D&A.Ltd") {}
-    mapping (uint => address) public landToOwner;
+    mapping (uint => address) private landToOwner;
     mapping (address => uint) ownerLandCount;
 
     function mintNFT(address recipient, string memory tokenURI) public onlyOwner returns (uint256) // modify/require to make sure the max num of NFT is not passedxx
@@ -27,11 +27,14 @@ contract DANFT is ERC721URIStorage, Ownable {
         ownerLandCount[msg.sender] = ownerLandCount[msg.sender]+1;
         return newItemId;
     }
+    function getAddressById(uint id) public view returns (address)
+    {
+        return landToOwner[id];
+    }
 }
 
 
 contract DAToken is ERC20{
-
     constructor(uint256 initial_supply)  ERC20("Dvir And Amit Token","DNA"){
         _mint(msg.sender,initial_supply);
     }

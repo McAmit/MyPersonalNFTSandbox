@@ -10,7 +10,7 @@ const web3 = createAlchemyWeb3(API_URL)
 
 const contract = require("../artifacts/contracts/DANFT.sol/DANFT.json")
 //console.log(JSON.stringify(contract.abi))  //print the ABI
-const contractAddress = "0x07cbB679880C96329cB491321B9aAdE218fb8Fb9"
+const contractAddress = "0x37d8fd36355A62C29c1811eEaBCA04Ef34144DD4"
 const nftContract = new web3.eth.Contract(contract.abi, contractAddress)
 async function mintNFT(tokenURI){
     const nonce = await web3.eth.getTransactionCount(PUBLIC_KEY, 'latest');
@@ -51,10 +51,13 @@ async function mintNFT(tokenURI){
         })
 }
 
-for(let i=3;i<2500;){
-  if(mintNFT("https://gateway.pinata.cloud/ipfs/QmPFZM2kwV4BUy8ptQoPYydG3vnyQiNeQfF7D8p8HhSDYf")){
-    i++
+async function mintPls(){
+  for(let i=5;i<=10;){
+    await Promise.resolve(10000);
+    mintNFT("https://gateway.pinata.cloud/ipfs/QmPFZM2kwV4BUy8ptQoPYydG3vnyQiNeQfF7D8p8HhSDYf")
     console.log("NFT #%d has been minted",i)
+    i++
   }
-
 }
+
+mintPls()

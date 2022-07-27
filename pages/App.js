@@ -1,5 +1,5 @@
 import Lands from './Lands'
-import LandMap from './landMap.js';
+import LandMap from './LandMap.js';
 import Instructions from "./instructions"
 import Login from "./Login"
 
