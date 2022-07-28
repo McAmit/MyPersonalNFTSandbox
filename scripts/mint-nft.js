@@ -52,9 +52,8 @@ async function mintNFT(tokenURI){
 }
 
 async function mintPls(){
-  for(let i=5;i<=10;){
-    await Promise.resolve(10000);
-    mintNFT("https://gateway.pinata.cloud/ipfs/QmPFZM2kwV4BUy8ptQoPYydG3vnyQiNeQfF7D8p8HhSDYf")
+  for(let i=6;i<=10;){
+    await mintNFT("https://gateway.pinata.cloud/ipfs/QmPFZM2kwV4BUy8ptQoPYydG3vnyQiNeQfF7D8p8HhSDYf")
     console.log("NFT #%d has been minted",i)
     i++
   }
