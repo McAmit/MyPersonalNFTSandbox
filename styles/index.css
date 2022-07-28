@@ -1,0 +1,42 @@
+/* * {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    color: #cfcece;
+} */
+
+.box {
+  padding: 10px;
+}
+
+.table{
+  border-collapse: collapse;
+} 
+
+.td, .th{
+  border: 2px solid #ddd;
+  padding: 50px;
+}
+
+.button {
+  background-color: rgb(66, 65, 65);
+  padding: 50px 50px;
+  cursor: pointer;
+}
+
+#blue {
+  background-color: blue;
+}
+
+#green {
+  background-color: mediumseagreen;
+}
+
+#purple {
+  background-color: purple;
+}
+
+.button {
+  color: #c03434;
+}
+

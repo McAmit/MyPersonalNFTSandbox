@@ -1,23 +1,16 @@
-import logo from './logo.svg';
 import './App.css';
+import LandMap from './LandMap.js';
+import Login from "./Login"
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+      <h1 id="title">Decentraland</h1>
       </header>
+      <Login/> {/*Need to implement the users: buyer, seller and guest 
+       <Instructions/> */}
+      <LandMap/>
     </div>
   );
 }
