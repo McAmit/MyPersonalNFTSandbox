@@ -6,9 +6,15 @@ import { MapInteractionCSS } from 'react-map-interaction';
 // Just pass in content as children and it will take care of the rest.
 
 const LandMap = () => {
-    
+    const value = {
+      scale: 0.2,
+      translation: {
+        x:0,
+        y:0
+      }
+    }
   return (
-    <MapInteractionCSS className="zoom">
+    <MapInteractionCSS defaultValue={value} showControls>
         
       <Lands/>
     </MapInteractionCSS>

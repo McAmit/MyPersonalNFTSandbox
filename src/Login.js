@@ -1,6 +1,10 @@
 import React from 'react'
 import MetaMaskOnboarding from '@metamask/onboarding'
-import {Web3} from 'web3'
+
+// import Web3 from 'web3'
+
+
+
 const forwarderOrigin = 'http://localhost:3000';
 const initialize = () => {
   //Basic Actions Section
@@ -83,16 +87,15 @@ function handleAccountsChanged(accounts) {
     document.getElementById('connectOrNot').innerHTML = "You are Connected"
   }
 }
-var web3
-function connectWeb3(){
-  if (typeof web3 !== 'undefined') {
-    // Mist, Metamask
-    web3 = new Web3(web3.currentProvider);
-} else {
-    // set the provider you want from Web3.providers
-    web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-}
-}
+// function connectWeb3(){
+//     if (typeof web3 !== 'undefined') {
+//       // Mist, Metamask
+//       web3 = new Web3(web3.currentProvider);
+//   } else {
+//       // set the provider you want from Web3.providers
+//       web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+//   }
+// }
 function login() {
   return (
     <div>

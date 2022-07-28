@@ -1,71 +1,116 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Popup from 'reactjs-popup';
 
+const { createAlchemyWeb3 } = require("@alch/alchemy-web3")
+const contract = require("../artifacts/contracts/DANFT.sol/DANFT.json")
+const contractAddress = "0x37d8fd36355A62C29c1811eEaBCA04Ef34144DD4"
+const web3 = createAlchemyWeb3('https://eth-rinkeby.alchemyapi.io/v2/SCRIwYy2WX0mP7w80_0aWuXcyg19YvOP')
 
-function Land({x, y, uKeytd,rowLength,address}) {
 
-    const PopUp = () => (
-        <Popup id="popup"
-          trigger={<button className="button"> </button>} // button to open a land with NFT
-          modal
-          nested
-        >
-          {close => (
-            <div className="modal" id="popup">
-              <button className="close" onClick={close}>&times;</button>
-              <div><br></br></div>
-              <div className="header"> NFT </div>
-              <div><br></br></div>
-              <div className="content">
-                <b>Index Location:</b> ({x}, {y})
-                <br></br>
-                <b>ID: </b>#{x*rowLength+y+1}
-                <br></br>
-                <b>Owner: </b>{address}
-                <br></br>
-                <b>Price: </b>100$
-                <br></br>
-                <b>Game exist:</b> No
 
+async function getAddress(id) {
+  
+  //console.log(JSON.stringify(contract.abi))  //print the ABI
+
+  const nftContract = new web3.eth.Contract(contract.abi, contractAddress)
+  const address = nftContract.methods.ownerOf(id)
+
+  return Promise.resolve(() => address)
+
+}
+
+
+function Land({x, y, uKeytd,rowLength}) {
+
+
+
+
+    const PopUp = () => {
+
+
+
+      const [address, setAddress] = useState()
+
+
+      useEffect(() => {
+          (async () => {
+
+            getAddress(id).then(addressFromContract => {
+              setAddress(addressFromContract)
+            })
+
+          })()
+      }, [])
+
+        return (
+
+
+
+
+          <Popup id="popup"
+            trigger={<button className="button"> </button>} // button to open a land with NFT
+            modal
+            nested
+          >
+            {close => (
+              <div className="modal" id="popup">
+                <button className="close" onClick={close}>&times;</button>
+                <div><br></br></div>
+                <div className="header"> NFT </div>
+                <div><br></br></div>
+                <div className="content">
+                  <b>Index Location:</b> ({x}, {y})
+                  <br></br>
+                  <b>ID: </b>#{x*rowLength+y+1}
+                  <br></br>
+                  <b>Owner: </b>{address}
+                  <br></br>
+                  <b>Price: </b>100$
+                  <br></br>
+                  <b>Game exist:</b> No
+  
+                </div>
+                <div><br></br></div>
+                <div className="actions">
+  
+                  {/* BUY Action*/}{/* we can separate to new files */}
+                  <Popup id="buyPage" trigger={<button className="button"> Buy </button>}
+                    modal
+                    nested
+                  >
+                  <button className="buyPage" onClick={close}>&times;</button>
+                  <h2> Buy Page </h2>
+                  {/* need to implement here more details and validation... */}
+                  </Popup>
+  
+                  {/* SELL Action */}{/* we can separate to new files */}
+                  <Popup trigger={<button className="button"> Sell </button>}
+                    modal
+                    nested
+                  >
+                  <button className="sellPage" onClick={close}>&times;</button>
+                  <h2> Sell Page </h2>
+                  {/* need to implement here more details and validation... */}
+                  </Popup>
+  
+                  {/* PLAY Action */}{/* we can separate to new files */}
+                  <Popup
+                    trigger={<button className="button"> Play </button>}
+                    modal
+                    nested
+                  >
+                  <button className="playPage" onClick={close}>&times;</button>
+                  <h2> GAME </h2>
+                  {/* need to implement here more details... */}
+                  </Popup>
+                </div>
               </div>
-              <div><br></br></div>
-              <div className="actions">
+            )}
+          </Popup>
+        );
 
-                {/* BUY Action*/}{/* we can separate to new files */}
-                <Popup id="buyPage" trigger={<button className="button"> Buy </button>}
-                  modal
-                  nested
-                >
-                <button className="buyPage" onClick={close}>&times;</button>
-                <h2> Buy Page </h2>
-                {/* need to implement here more details and validation... */}
-                </Popup>
 
-                {/* SELL Action */}{/* we can separate to new files */}
-                <Popup trigger={<button className="button"> Sell </button>}
-                  modal
-                  nested
-                >
-                <button className="sellPage" onClick={close}>&times;</button>
-                <h2> Sell Page </h2>
-                {/* need to implement here more details and validation... */}
-                </Popup>
-
-                {/* PLAY Action */}{/* we can separate to new files */}
-                <Popup
-                  trigger={<button className="button"> Play </button>}
-                  modal
-                  nested
-                >
-                <button className="playPage" onClick={close}>&times;</button>
-                <h2> GAME </h2>
-                {/* need to implement here more details... */}
-                </Popup>
-              </div>
-            </div>
-          )}
-        </Popup>
-      );
+    }
 
         // can't insert NFT on ROADS(blue):
         if( x % 26 === 10 | y % 26 === 10) { 

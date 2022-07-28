@@ -8,7 +8,8 @@ function App() {
       <header className="App-header">
       <h1 id="title">Decentraland</h1>
       </header>
-      <Login/> {/*Need to implement the users: buyer, seller and guest 
+      <Login/> 
+      {/*Need to implement the users: buyer, seller and guest 
        <Instructions/> */}
       <LandMap/>
     </div>

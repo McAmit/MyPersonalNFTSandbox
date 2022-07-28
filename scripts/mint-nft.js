@@ -15,7 +15,7 @@ const nftContract = new web3.eth.Contract(contract.abi, contractAddress)
 async function mintNFT(tokenURI){
     const nonce = await web3.eth.getTransactionCount(PUBLIC_KEY, 'latest');
 
-    const txn = {
+      const txn = {
         'from': PUBLIC_KEY,
         'to': contractAddress,
         'nonce': nonce,
@@ -24,23 +24,16 @@ async function mintNFT(tokenURI){
       };
 
       const signPromise = web3.eth.accounts.signTransaction(txn, PRIVATE_KEY)
-      signPromise
+      return signPromise
         .then((signedTx) => {
-          web3.eth.sendSignedTransaction(
+          return web3.eth.sendSignedTransaction(
             signedTx.rawTransaction,
             function (err, hash) {
               if (!err) {
-                console.log(
-                  "The hash of your transaction is: ",
-                  hash,
-                  "\nCheck Alchemy's Mempool to view the status of your transaction!"
-                )
+                console.log("The hash of your transaction is: ",hash,"\nCheck Alchemy's Mempool to view the status of your transaction!")
                 return true;
               } else {
-                console.log(
-                  "Something went wrong when submitting your transaction:",
-                  err
-                )
+                console.log("Something went wrong when submitting your transaction:",err)
               }
             }
           )
@@ -51,11 +44,15 @@ async function mintNFT(tokenURI){
         })
 }
 
-async function mintPls(){
-  for(let i=6;i<=10;){
-    await mintNFT("https://gateway.pinata.cloud/ipfs/QmPFZM2kwV4BUy8ptQoPYydG3vnyQiNeQfF7D8p8HhSDYf")
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function mintPls() {
+  for(let i=6;i<=10;i++){
+    const success = await mintNFT("https://gateway.pinata.cloud/ipfs/QmPFZM2kwV4BUy8ptQoPYydG3vnyQiNeQfF7D8p8HhSDYf")
+    await sleep(5000)
     console.log("NFT #%d has been minted",i)
-    i++
   }
 }
 
