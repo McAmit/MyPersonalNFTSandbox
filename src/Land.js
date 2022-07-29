@@ -34,9 +34,7 @@ async function checkIfImOwner(id){
 
   return false
 }
-async function addGameToLand(game){
 
-}
 function isUser(){ 
   if(currentUser!=="undefined") 
     return false
@@ -60,7 +58,9 @@ function Land({x, y, uKeytd}) {
         nav("./tictactoe")
       }
 
+      function addGameToLand(game){
 
+      }
 
       useEffect(() => {
           (async () => {
@@ -109,10 +109,10 @@ function Land({x, y, uKeytd}) {
                   >
                     {close => (<div className="modal" id="popup">
                     <button onClick={close}>&times;</button>
-                    <h2> Buy Page </h2>
+                    <h2 className='header'> Buy </h2>
                     <h2>Do you want to buy?</h2>
                     <p id="butPrice"></p>
-                    <button id="Buy">Buy</button>
+                    <button id="button2">Buy</button>
                   </div>
                     )}
                   </Popup>
@@ -124,14 +124,16 @@ function Land({x, y, uKeytd}) {
                   >
                     {close => (<div className="modal" id="popup">
                     <button onClick={close}>&times;</button>
-                    <h2> Sell Page </h2>
+                    <h2 className='header'> Sell </h2>
                     <input id="sellPrice" placeholder='Set a Price'></input>
-                    <button id="Submit">Submit</button>
+                    <br></br>
+                    <button id="button2">Submit</button>
                   </div>
                     )}
                   </Popup>
   
                   {/* PLAY Action */}
+                  {/* need to implement disable option while there is no game on land */}
                   <Popup
                     trigger={<button className="button"> Play </button>}
                     modal
@@ -139,8 +141,8 @@ function Land({x, y, uKeytd}) {
                   >
                     {close => (<div className="modal" id="popup">
                     <button onClick={close}>&times;</button>
-                    <h2> Start a Game </h2>
-                    <button id="Play" onClick={onClickPlay}>Play</button>
+                    <h2 className='header'> Start a Game </h2>
+                    <button id="button2" onClick={onClickPlay}>Play</button>
                   </div>
                     )}
                   </Popup>
@@ -152,8 +154,14 @@ function Land({x, y, uKeytd}) {
                   >
                     {close => (<div className="modal" id="popup">
                     <button onClick={close}>&times;</button>
-                    <h2> Choose a Game </h2>
-                    <button id="AddGame"> Insert a Game</button>
+                    <h2 className='header'> Choose a Game </h2>
+                    <select id="SelectGames" name="Games">
+                      <option value="Tic-Tac-Toc">Tic-Tac-Toc</option>
+                      <option value="temp">temp</option>
+                    </select>
+                    <br></br>
+                    {/* the game value need to chagne to the value we get from the select game: */}
+                    <button id="button2" onClick={(game) => addGameToLand(game)}> Insert a Game</button>
                   </div>
                     )}
                   </Popup>

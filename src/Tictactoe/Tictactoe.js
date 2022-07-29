@@ -3,10 +3,10 @@
 // #### Rob Hitt
 // * [E-mail](mailto:robhitt@gmail.com)
 import React from 'react'
+import {Link} from 'react-router-dom';
 import "./tictactoe.css"
 
 function Tictactoe() {
-
     window.addEventListener('load', app);
     var gameBoard = ['', '', '', '', '', '', '', '', '']; 
     var turn = 0; // Keeps track if X or O player's turn
@@ -251,6 +251,7 @@ function Tictactoe() {
 
                     <input type="submit" className="submit-btn" value="Start Game" />
                 </form>
+                <Link id="button2" to="/user"> Back to Lands</Link>
             </div>
 
             <div className="board__main hide-container">
