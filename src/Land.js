@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Popup from 'reactjs-popup';
+import {useNavigate} from 'react-router-dom';
 const ethers = require("ethers")
 
 const contract = require("./abi.json")
@@ -43,7 +44,7 @@ function isUser(){
 }
 
 function Land({x, y, uKeytd}) {
-    
+    let nav=useNavigate()
     const PopUp = () => {
       const [address, setAddress] = useState()
       const [price,setPrice] = useState()
@@ -53,6 +54,10 @@ function Land({x, y, uKeytd}) {
           document.getElementById("priceMessage").innerText="Cannot change the price of a land you do not own"
         else 
           setPrice(num)
+      }
+
+      function onClickPlay(){
+        nav("./tictactoe")
       }
 
 
@@ -78,7 +83,7 @@ function Land({x, y, uKeytd}) {
               <div className="modal" id="popup">
                 <button className="close" onClick={close}>&times;</button>
                 <div><br></br></div>
-                <div className="header"> NFT </div>
+                <div className="header"> NFT D&A</div>
                 <div><br></br></div>
                 <div className="content">
                   <b>Index Location:</b> ({x}, {y})
@@ -97,35 +102,60 @@ function Land({x, y, uKeytd}) {
                 <div><br></br></div>
                 <div className="actions">
   
-                  {/* BUY Action*/}{/* we can separate to new files */}
+                  {/* BUY Action*/}
                   <Popup id="buyPage" trigger={<button className="button"> Buy </button>}
                     modal
                     nested
                   >
-                  <button className="popup2" onClick={close}>&times;</button>
-                  <h2> Buy Page </h2>
-                  {/* need to implement here more details and validation... */}
+                    {close => (<div className="modal" id="popup">
+                    <button onClick={close}>&times;</button>
+                    <h2> Buy Page </h2>
+                    <h2>Do you want to buy?</h2>
+                    <p id="butPrice"></p>
+                    <button id="Buy">Buy</button>
+                  </div>
+                    )}
                   </Popup>
   
-                  {/* SELL Action */}{/* we can separate to new files */}
+                  {/* SELL Action */}
                   <Popup  trigger={<button className="button"> Sell </button>}
                     modal
                     nested
                   >
-                  <button className="popup2" onClick={close}>&times;</button>
-                  <h2> Sell Page </h2>
-                  {/* need to implement here more details and validation... */}
+                    {close => (<div className="modal" id="popup">
+                    <button onClick={close}>&times;</button>
+                    <h2> Sell Page </h2>
+                    <input id="sellPrice" placeholder='Set a Price'></input>
+                    <button id="Submit">Submit</button>
+                  </div>
+                    )}
                   </Popup>
   
-                  {/* PLAY Action */}{/* we can separate to new files */}
+                  {/* PLAY Action */}
                   <Popup
-                    trigger={<button className="popupPlay"> Play </button>}
+                    trigger={<button className="button"> Play </button>}
                     modal
                     nested
                   >
-                  <button className="button" onClick={close}>&times;</button>
-                  <h2> GAME </h2>
-                  {/* need to implement here more details... */}
+                    {close => (<div className="modal" id="popup">
+                    <button onClick={close}>&times;</button>
+                    <h2> Start a Game </h2>
+                    <button id="Play" onClick={onClickPlay}>Play</button>
+                  </div>
+                    )}
+                  </Popup>
+                  {/* ADD GAME Action */}
+                  <Popup
+                    trigger={<button className="button"> Add Game </button>}
+                    modal
+                    nested
+                  >
+                    {close => (<div className="modal" id="popup">
+                    <button onClick={close}>&times;</button>
+                    <h2> Choose a Game </h2>
+                    <button id="AddGame"> Insert a Game</button>
+                  </div>
+                    )}
                   </Popup>
                 </div>
               </div>
