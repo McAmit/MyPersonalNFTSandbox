@@ -41,7 +41,9 @@ async function checkIfImOwner(userName,id){
 async function addGameToLand(game){
 
 }
+function isUser(userName){
 
+}
 
 function Land({x, y, uKeytd,userName}) {
 
@@ -60,9 +62,6 @@ function Land({x, y, uKeytd,userName}) {
       }, [])
 
         return (
-
-
-
 
           <Popup id="popup"
             trigger={<button className="button"> </button>} // button to open a land with NFT
