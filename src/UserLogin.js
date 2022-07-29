@@ -65,9 +65,7 @@ const initialize = () => {
   };
   
   MetaMaskClientCheck();
-  checkConnection();
-  //history.push("./user", { replace: true })
-  
+  checkConnection();  
 };
 
 async function checkConnection() {

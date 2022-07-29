@@ -11,7 +11,8 @@ const signer = provider.getSigner()
 
 const nftContract = new ethers.Contract(nftAddress,nftABI,provider)
 
-var price=0
+var currentUser=sessionStorage.getItem('username')
+
 
 async function getAddress(id) {
   const owner = await nftContract.ownerOf(id)
@@ -25,15 +26,9 @@ async function buyLand(landID){
   }
 
 }
-async function setPrice(price){
-  if(!checkIfImOwner())
-    return "Cannot change the price of a land you do not own"
-  else 
-    this.price=price
-    return 
-}
-async function checkIfImOwner(userName,id){
-  if(userName===getAddress(id))
+
+async function checkIfImOwner(id){
+  if(currentUser===getAddress(id))
     return true
 
   return false
@@ -41,14 +36,25 @@ async function checkIfImOwner(userName,id){
 async function addGameToLand(game){
 
 }
-function isUser(userName){
-
+function isUser(){ 
+  if(currentUser!=="undefined") 
+    return false
+  return true
 }
 
-function Land({x, y, uKeytd,userName}) {
-
+function Land({x, y, uKeytd}) {
+    
     const PopUp = () => {
       const [address, setAddress] = useState()
+      const [price,setPrice] = useState()
+
+      function priceSet(num){
+        if(!checkIfImOwner())
+          document.getElementById("priceMessage").innerText="Cannot change the price of a land you do not own"
+        else 
+          setPrice(num)
+      }
+
 
 
       useEffect(() => {
@@ -57,7 +63,7 @@ function Land({x, y, uKeytd,userName}) {
             getAddress(uKeytd).then(addressFromContract => {
               setAddress(addressFromContract)
             })
-
+            setPrice(5)
           })()
       }, [])
 
@@ -81,7 +87,9 @@ function Land({x, y, uKeytd,userName}) {
                   <br></br>
                   <b>Owner: </b>{address}
                   <br></br>
-                  <b>Price: </b>{price}
+                  <b>Price in DNA Tokens: </b>{price}
+                  <br></br>
+                  <b id="priceMessage"></b>
                   <br></br>
                   <b>Game exist:</b> No
   
