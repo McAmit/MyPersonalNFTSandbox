@@ -102,28 +102,28 @@ function Land({x, y, uKeytd}) {
                     modal
                     nested
                   >
-                  <button className="buyPage" onClick={close}>&times;</button>
+                  <button className="popup2" onClick={close}>&times;</button>
                   <h2> Buy Page </h2>
                   {/* need to implement here more details and validation... */}
                   </Popup>
   
                   {/* SELL Action */}{/* we can separate to new files */}
-                  <Popup trigger={<button className="button"> Sell </button>}
+                  <Popup  trigger={<button className="button"> Sell </button>}
                     modal
                     nested
                   >
-                  <button className="sellPage" onClick={close}>&times;</button>
+                  <button className="popup2" onClick={close}>&times;</button>
                   <h2> Sell Page </h2>
                   {/* need to implement here more details and validation... */}
                   </Popup>
   
                   {/* PLAY Action */}{/* we can separate to new files */}
                   <Popup
-                    trigger={<button className="button"> Play </button>}
+                    trigger={<button className="popupPlay"> Play </button>}
                     modal
                     nested
                   >
-                  <button className="playPage" onClick={close}>&times;</button>
+                  <button className="button" onClick={close}>&times;</button>
                   <h2> GAME </h2>
                   {/* need to implement here more details... */}
                   </Popup>

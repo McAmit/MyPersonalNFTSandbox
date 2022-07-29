@@ -79,7 +79,6 @@ function handleAccountsChanged(accounts) {
   console.log(accounts);
   let currentAccount = ""
   if (accounts.length === 0) {
-    document.getElementById('connectButton').disabled = true;
     console.log("You're not connected to MetaMask")
     document.getElementById('connectOrNot').innerHTML = "You are not connected to MetaMask"
     // document.getElementById('getAccountsResult').innerHTML = ""
@@ -88,10 +87,12 @@ function handleAccountsChanged(accounts) {
     currentAccount = accounts[0];
     // document.getElementById('getAccountsResult').innerHTML = "Account Address: "+accounts[0] || 'Not able to get accounts';
     console.log("Connected")
-    document.getElementById('connectOrNot').innerHTML = "You are Connected"
+    document.getElementById('connectButton').disabled = true;
+    document.getElementById('connectOrNot').innerHTML = "You are Connected as:"+currentAccount
   }
   userName = currentAccount
   sessionStorage.setItem('username', userName)
+  
 }
 
 function UserLogin() {
@@ -107,7 +108,7 @@ function UserLogin() {
   return (
     <div>
         <h4 id="connectOrNot"> You are not connected to MetaMask </h4>
-        <button id="connectButton" onClick={click} disabled={checker}> 
+        <button id="connectButton" onClick={click}> 
           Connect your MetaMask
         </button>
        <button id="goToMap" disabled={!checker} onClick={moveOnClick}>Check Out Our Lands!</button>
