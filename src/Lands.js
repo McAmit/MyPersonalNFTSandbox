@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react'
+// import React, { useEffect, useState } from 'react'
 import Land from "./Land.js"
-import { MapInteractionCSS } from 'react-map-interaction';
 
-function Lands() {
+function Lands(userName) {
     let uKeytd = 0 // unique key - td
-    let uKeytr = 0 // unique key - tr
+    // let uKeytr = 0 // unique key - tr
 
     function createRowLands(x, totalRowLands){
         let landsByRow = []
         for (let y = 0; y < totalRowLands; y++, uKeytd++) {
-            landsByRow.push(<Land x={x} y={y} uKeytd={uKeytd} key={"land"+uKeytd} rowLength={totalRowLands}></Land>)
+            landsByRow.push(<Land x={x} y={y} uKeytd={uKeytd} 
+                userName={userName} key={"land"+uKeytd}
+                 rowLength={totalRowLands}></Land>)
         }
         return landsByRow
     

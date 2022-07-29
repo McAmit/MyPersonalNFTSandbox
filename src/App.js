@@ -1,17 +1,18 @@
+import { BrowserRouter } from 'react-router-dom';
 import './App.css';
-import LandMap from './LandMap.js';
-import Login from "./Login"
+import LoginPage from './Home/LoginPage.js';
+// import LandMap from './LandMap.js';
+// import Login from "./Login"
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-      <h1 id="title">Decentraland</h1>
-      </header>
-      <Login/> 
-      {/*Need to implement the users: buyer, seller and guest 
-       <Instructions/> */}
-      <LandMap/>
+      <BrowserRouter>
+        <header className="App-header">
+        <h1 id="title">Decentraland</h1>
+        </header>
+        <LoginPage/>
+      </BrowserRouter>
     </div>
   );
 }

@@ -1,12 +1,18 @@
 .App {
  background-color: #282c34;
- position: absolute;
+ /* position: absolute; */
 }
 
 .App-header {
   color: #cfcece;
   font-size: calc(10px + 2vmin);
   padding: 1px;
+}
+#title {
+  text-align: center;
+}
+.Home {
+  text-align: center;  
 }
 
 .modal {

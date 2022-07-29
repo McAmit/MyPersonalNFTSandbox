@@ -5,6 +5,35 @@
     color: #cfcece;
 } */
 
+#connectButton {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #1e45f4;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px; 
+}
+#guest {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #1e45f4;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
 .box {
   padding: 10px;
 }

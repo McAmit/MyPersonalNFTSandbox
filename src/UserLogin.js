@@ -1,14 +1,13 @@
 import React from 'react'
 import MetaMaskOnboarding from '@metamask/onboarding'
-
-
-
+import {Link} from 'react-router-dom';
+var userName = ""
 const forwarderOrigin = 'http://localhost:3000';
 const initialize = () => {
   //Basic Actions Section
   const onboardButton = document.getElementById('connectButton');
   // const getAccountsButton = document.getElementById('getAccounts');
-  const getAccountsResult = document.getElementById('getAccountsResult');
+  // const getAccountsResult = document.getElementById('getAccountsResult');
   const { ethereum } = window;
   //Created check function to see if the MetaMask extension is installed
   const isMetaMaskInstalled = () => {
@@ -23,7 +22,7 @@ const initialize = () => {
   //This will start the onboarding proccess
   const onClickInstall = () => {
     onboardButton.innerText = 'Onboarding in progress';
-    onboardButton.disabled;
+    onboardButton.disabled = true;
     //On this object we have startOnboarding which will start the onboarding process for our end user
     onboarding.startOnboarding();
   };
@@ -71,29 +70,31 @@ async function checkConnection() {
 
 function handleAccountsChanged(accounts) {
   console.log(accounts);
-  let currentAccount = "undefined"
+  let currentAccount = ""
   if (accounts.length === 0) {
     document.getElementById('connectButton').disabled = false;
     console.log("You're not connected to MetaMask")
     document.getElementById('connectOrNot').innerHTML = "You are not connected to MetaMask"
-    document.getElementById('getAccountsResult').innerHTML = ""
+    // document.getElementById('getAccountsResult').innerHTML = ""
 
   } else if (accounts[0] !== currentAccount) {
     currentAccount = accounts[0];
-    document.getElementById('getAccountsResult').innerHTML = "Account Address: "+accounts[0] || 'Not able to get accounts';
+    // document.getElementById('getAccountsResult').innerHTML = "Account Address: "+accounts[0] || 'Not able to get accounts';
     console.log("Connected")
     document.getElementById('connectOrNot').innerHTML = "You are Connected"
   }
+  userName = currentAccount
 }
 
-function login() {
+function userLogin() {
   return (
     <div>
         <h4 id="connectOrNot"> You are not connected to MetaMask </h4>
-        <button id="connectButton" onClick={initialize}>Connect your MetaMask</button>
-        <p id="getAccountsResult" ></p>
+        <Link id="connectButton" onClick={initialize} to="/user"> 
+          Connect your MetaMask
+        </Link>
     </div>
   )
 }
 
-export default login;
+export default userLogin;

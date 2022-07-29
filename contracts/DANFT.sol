@@ -18,13 +18,13 @@ contract DANFT is ERC721URIStorage, Ownable {
 
     function mintNFT(address recipient, string memory tokenURI) public onlyOwner returns (uint256) // modify/require to make sure the max num of NFT is not passedxx
     {
-        _tokenIds.increment();
         require(_tokenIds.current()<=maxIndex, "No more NFTs to mint"); 
         uint256 newItemId = _tokenIds.current();
         _mint(recipient, newItemId);
         _setTokenURI(newItemId, tokenURI);
         landToOwner[newItemId] = msg.sender;
         ownerLandCount[msg.sender] = ownerLandCount[msg.sender]+1;
+        _tokenIds.increment();
         return newItemId;
     }
     function getAddressById(uint id) public view returns (address)

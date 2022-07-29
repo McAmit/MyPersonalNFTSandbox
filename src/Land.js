@@ -1,41 +1,58 @@
 import React, { useEffect, useState } from 'react'
 import Popup from 'reactjs-popup';
+const ethers = require("ethers")
 
-const { createAlchemyWeb3 } = require("@alch/alchemy-web3")
-const contract = require("../artifacts/contracts/DANFT.sol/DANFT.json")
-const contractAddress = "0x37d8fd36355A62C29c1811eEaBCA04Ef34144DD4"
-const web3 = createAlchemyWeb3('https://eth-rinkeby.alchemyapi.io/v2/SCRIwYy2WX0mP7w80_0aWuXcyg19YvOP')
+const contract = require("./abi.json")
+const nftABI = contract.abi
+const nftAddress = "0x37d8fd36355A62C29c1811eEaBCA04Ef34144DD4"
 
+const provider = new ethers.providers.Web3Provider(window.ethereum)
+const signer = provider.getSigner()
 
+const nftContract = new ethers.Contract(nftAddress,nftABI,provider)
+
+var price=0
 
 async function getAddress(id) {
-  
-  //console.log(JSON.stringify(contract.abi))  //print the ABI
+  const owner = await nftContract.ownerOf(id)
+  return owner
+}
+async function buyLand(landID){
+  if(checkIfImOwner())
+    return "This land is already yours!"
+  else {
+    // make TXN
+  }
 
-  const nftContract = new web3.eth.Contract(contract.abi, contractAddress)
-  const address = nftContract.methods.ownerOf(id)
+}
+async function setPrice(price){
+  if(!checkIfImOwner())
+    return "Cannot change the price of a land you do not own"
+  else 
+    this.price=price
+    return 
+}
+async function checkIfImOwner(userName,id){
+  if(userName===getAddress(id))
+    return true
 
-  return Promise.resolve(() => address)
+  return false
+}
+async function addGameToLand(game){
 
 }
 
 
-function Land({x, y, uKeytd,rowLength}) {
-
-
-
+function Land({x, y, uKeytd,userName}) {
 
     const PopUp = () => {
-
-
-
       const [address, setAddress] = useState()
 
 
       useEffect(() => {
           (async () => {
 
-            getAddress(id).then(addressFromContract => {
+            getAddress(uKeytd).then(addressFromContract => {
               setAddress(addressFromContract)
             })
 
@@ -61,11 +78,11 @@ function Land({x, y, uKeytd,rowLength}) {
                 <div className="content">
                   <b>Index Location:</b> ({x}, {y})
                   <br></br>
-                  <b>ID: </b>#{x*rowLength+y+1}
+                  <b>ID: </b>#{uKeytd+1}
                   <br></br>
                   <b>Owner: </b>{address}
                   <br></br>
-                  <b>Price: </b>100$
+                  <b>Price: </b>{price}
                   <br></br>
                   <b>Game exist:</b> No
   
