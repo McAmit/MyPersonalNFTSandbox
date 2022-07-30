@@ -14,7 +14,6 @@ const nftContract = new ethers.Contract(nftAddress,nftABI,provider)
 
 var currentUser=sessionStorage.getItem('username')
 
-
 async function getAddress(id) {
   const owner = await nftContract.ownerOf(id)
   return owner
@@ -59,7 +58,7 @@ function Land({x, y, uKeytd}) {
       }
 
       function addGameToLand(game){
-
+        
       }
 
       useEffect(() => {
@@ -161,7 +160,7 @@ function Land({x, y, uKeytd}) {
                     </select>
                     <br></br>
                     {/* the game value need to chagne to the value we get from the select game: */}
-                    <button id="button2" onClick={(game) => addGameToLand(game)}> Insert a Game</button>
+                    <button id="button2" disabled={true} onClick={(game) => addGameToLand(game)}> Insert a Game</button>
                   </div>
                     )}
                   </Popup>

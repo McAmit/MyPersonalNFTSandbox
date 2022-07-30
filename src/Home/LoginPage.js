@@ -2,7 +2,8 @@ import {Route, Routes } from 'react-router-dom';
 import User from './User'
 import Guest from './Guest.js'
 import Home from './Home.js'
-import Tictactoe from '../Tictactoe/Tictactoe.js';
+import Tictactoe from '../TictactoeGame/Tictactoe.js';
+import MemoryGame from '../MemoryGame/MemoryApp.js';
 
 function LoginPage() {
   return (
@@ -12,6 +13,7 @@ function LoginPage() {
             <Route path="/" element={<Home/>}></Route>
             <Route path="/guest" element={<Guest/>}></Route>
             <Route path="/user/tictactoe" element={<Tictactoe/>}></Route>
+            {/* <Route path="/user/memorygame" element={<MemoryGame/>}></Route> */}
         </Routes>
     </div>
   )

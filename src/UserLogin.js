@@ -111,7 +111,7 @@ function UserLogin() {
         <button id="connectButton" onClick={click}> 
           Connect your MetaMask
         </button>
-       <button id="goToMap" disabled={!checker} onClick={moveOnClick}>Check Out Our Lands!</button>
+       <button id="button2" disabled={!checker} onClick={moveOnClick}>Check Out Our Lands!<br/>(Only Members)</button>
     </div>
   )
 }
