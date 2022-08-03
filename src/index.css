@@ -1,0 +1,106 @@
+/* * {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+    color: #cfcece;
+} */
+
+/* #connectButton {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #1e45f4;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 28px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px; 
+} */
+
+#button2 {
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #1e45f4;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 16px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:disabled,
+#button2[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  cursor: default;
+  color: #666666;
+}
+
+#connectButton{
+  display: inline-block;
+  border-radius: 4px;
+  background-color: #1e45f4;
+  border: none;
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 20px;
+  padding: 20px;
+  width: 200px;
+  transition: all 0.5s;
+  cursor: pointer;
+  margin: 5px;
+}
+
+button:disabled,
+#connectButton[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  cursor: default;
+  color: #666666;
+}
+
+.box {
+  padding: 10px;
+}
+
+.table{
+  border-collapse: collapse;
+} 
+
+.td, .th{
+  border: 2px solid #ddd;
+  padding: 50px;
+}
+
+.button {
+  background-color: rgb(66, 65, 65);
+  padding: 50px 50px;
+  cursor: pointer;
+}
+.button.disabled {
+  color :#666;
+}
+
+#blue {
+  background-color: blue;
+}
+
+#green {
+  background-color: mediumseagreen;
+}
+
+#purple {
+  background-color: purple;
+}
+
+.button {
+  color: #c03434;
+}
+
