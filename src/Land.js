@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Popup from 'reactjs-popup';
+import { BigNumber } from 'ethers';
 import {useHistory} from 'react-router-dom';
 import {
   transferNFT,
@@ -76,7 +77,10 @@ function Land({x, y, uKeytd, isOpen}) {
         }
         function metaMaskBuy(){
           const buyButton = document.getElementById('button2');
-          let fixedAmount = price*10**8
+          let decimals = BigNumber.from(10**8)
+          ethereum.request({ method: 'eth_requestAccounts' }).then(accounts =>{
+            console.log(accounts[0])
+          }).catch(error => {console.log(error)})
           console.log(tokenContract)
           if(buyButton)
           buyButton.addEventListener('click',()=>{ethereum.request({
@@ -86,13 +90,13 @@ function Land({x, y, uKeytd, isOpen}) {
                   nonce:"0x00",
                   from : currentUser,
                   to : tokenContract,
-                  gasPrice : "",
-                  gas : "",
-                  data : tokenContract.methods.transfer(landLord, fixedAmount).encodeABI(),
+                  gasPrice : 50000,
+                  gas : 25000,
+                  data : tokenContract.methods.transfer(landLord, decimals*100).encodeABI(),
                 },
               ],
             }).then((txHash) => console.log(txHash))
-            .catch((error) => console.error)
+            .catch((error) => console.log("this is the catch",error))
           })
         }
 
@@ -150,6 +154,12 @@ function Land({x, y, uKeytd, isOpen}) {
           }else {
             return "false"
           }
+        }
+        function checkBalance(){
+          window.ethereum.request({
+            method: "eth_getBalance",
+            params: [currentUser, "latest"]
+          }).then(balance => {setBalance(balance)})
         }
 
         function showIsGameExist(){
