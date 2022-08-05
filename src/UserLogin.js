@@ -81,7 +81,7 @@ function handleAccountsChanged(accounts) {
     document.getElementById('connectButton').disabled = true;
     document.getElementById('button2').disabled = false;
     document.getElementById('connectOrNot').innerHTML = "You are Connected as:" + currentAccount
-    sessionStorage.setItem('username', userName)
+    sessionStorage.setItem('username', currentAccount)
     return true
   }
   

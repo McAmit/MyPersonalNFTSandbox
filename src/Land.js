@@ -29,13 +29,6 @@ function buyLand(landID){
 
 }
 
-function checkIfImOwner(id){
-  if(currentUser===getAddress(id))
-    return true
-
-  return false
-}
-
 function isUser(){ 
   if(currentUser!=="undefined") 
     return false
@@ -43,34 +36,63 @@ function isUser(){
 }
 
 function Land({x, y, uKeytd, isOpen}) {
-  const [showPopup, setShowPopup] = useState(false);
-    const nav=useHistory()
-    const PopUp = () => {
-      const [address, setAddress] = useState()
-      const [price,setPrice] = useState(5)
+      const [showPopup, setShowPopup] = useState(false);
+      const nav=useHistory()
 
-      function priceSet(num){
-        if(!checkIfImOwner())
-          document.getElementById("priceMessage").innerText="Cannot change the price of a land you do not own"
-        else{
-          setPrice(num)
+      const PopUp = () => {
+        const [thereIsGame,setThereIsGame]=useState(() => {return false}) 
+        const [selectedValueGameInsert, setSelectedValueGameInsert] = useState(()=> {return "there is no game in this land"})
+        const [ownerAddressLand, setAddress] = useState("")
+        const [price,setPrice] = useState(5)
+
+        function checkIfImOwner(){
+          console.log("currentUser: ", currentUser)
+          console.log("Owner: ", ownerAddressLand.toLowerCase())
+          if(currentUser === ownerAddressLand.toLowerCase()){  
+            return true
+          }
+          return false
         }
-      }
 
-      function onClickPlay(){
-        nav.push("./tictactoe")
-      }
+        function priceSet(num){
+          if(!checkIfImOwner())
+            document.getElementById("priceMessage").innerText="Cannot change the price of a land you do not own"
+          else{
+            setPrice(num)
+          }
+        }
 
-      function addGameToLand(game){
-        
-      }
+        function onClickPlay(){
+          if (selectedValueGameInsert === "Connect4")
+            nav.push("./user/connect4/")
+          else if (selectedValueGameInsert === "Tic-Tac-Toe"){
+            nav.push("./user/tictactoe/")
+          }
+        }
 
-      useEffect(() => {
-        getAddress(uKeytd).then(addressFromContract => {
-          setAddress(addressFromContract)
-        })
-      }, [])
+        function addGameToLand(e){
+          if(checkIfImOwner(uKeytd+1)){
+            setThereIsGame(true)
+            console.log(thereIsGame)
+            document.getElementById('addedGame').innerHTML = "Game Added!"
+          }
+          else {
+            document.getElementById('addedGame').innerHTML = "Sorry, You are not the owner of this NFT"
+          }
+        }
 
+        function handleSelectedValueGameInsert(e){
+          if(checkIfImOwner(uKeytd+1)){
+            console.log("e: ", e.target.value)
+            setSelectedValueGameInsert(e.target.value)
+          }
+        }
+
+        useEffect(() => {
+          getAddress(uKeytd).then(addressFromContract => {
+            setAddress(addressFromContract)
+          })
+        }, [])
 
         return (
 
@@ -91,7 +113,7 @@ function Land({x, y, uKeytd, isOpen}) {
                   <br></br>
                   <b>ID: </b>#{uKeytd+1}
                   <br></br>
-                  <b>Owner: </b>{address}
+                  <b>Owner: </b>{ownerAddressLand.toLowerCase()}
                   <br></br>
                   <b>Price in DNA Tokens: </b>{price}
                   <br></br>
@@ -133,48 +155,45 @@ function Land({x, y, uKeytd, isOpen}) {
                     )}
                   </Popup>
   
-                  {/* PLAY Action */}
-                  {/* need to implement disable option while there is no game on land */}
+                      {/* PLAY Action */}
                   <Popup
-                    trigger={<button className="button"> Play </button>}
-                    modal
-                    nested
-                  >
-                    {close => (<div className="modal" id="popup">
-                    <button onClick={close}>&times;</button>
-                    <h2 className='header'> Start a Game </h2>
-                    <button id="button2" onClick={onClickPlay}>Play</button>
-                  </div>
-                    )}
-                  </Popup>
+                        trigger={<button className="button"> Play </button>}
+                        modal
+                        nested
+                      >
+                        {close => (<div className="modal" id="popup">
+                        <button onClick={close}>&times;</button>
+                        <h2 className='header'> Start a Game </h2>
+                        <h3>{selectedValueGameInsert}</h3>
+                        <button id="button2" onClick={() => onClickPlay()}>Play</button>
+                      </div>
+                        )}
+                      </Popup>
                   {/* ADD GAME Action */}
                   <Popup
-                    trigger={<button className="button"> Add Game </button>}
-                    modal
-                    nested
-                  >
-                    {close => (<div className="modal" id="popup">
-                    <button onClick={close}>&times;</button>
-                    <h2 className='header'> Choose a Game </h2>
-                    <select id="SelectGames" name="Games">
-                      <option value="Tic-Tac-Toc">Tic-Tac-Toc</option>
-                      <option value="temp">temp</option>
-                    </select>
-                    <br></br>
-                    {/* the game value need to chagne to the value we get from the select game: */}
-                    <button id="button2" disabled={true} onClick={(game) => addGameToLand(game)}> Insert a Game</button>
-                  </div>
-                    )}
-                  </Popup>
+                        trigger={<button className="button"> Add Game </button>}
+                        modal
+                        nested
+                      >
+                        {close => (<div className="modal" id="popup">
+                        <button onClick={close}>&times;</button>
+                        <h2 className='header'> Choose a Game </h2>
+                        <select defaultValue={"Tic-Tac-Toe"} id="SelectGames" name="Games" onChange={e => handleSelectedValueGameInsert(e)}>
+                          <option value="Tic-Tac-Toe">Tic-Tac-Toe</option>
+                          <option value="Connect4">Connect4</option>
+                        </select>
+                        <br></br>
+                        <p id="addedGame"> you didn't choose a game yet</p>
+                        <button id="button2" onClick={(e) => addGameToLand(e)}> Insert a Game</button>
+                      </div>
+                        )}
+                      </Popup>
                 </div>
               </div>
             )}
           </Popup>
         );
-
-
     }
-
 
     const onClickLand = () => {
         setShowPopup(true)

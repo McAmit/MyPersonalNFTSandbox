@@ -43,10 +43,45 @@ async function mintNFT(tokenURI){
           return false;
         })
 }
+async function sentNFT(to,id){
+  const nonce = await web3.eth.getTransactionCount(PUBLIC_KEY, 'latest');
+
+      const txn = {
+        'from': PUBLIC_KEY,
+        'to': contractAddress,
+        'nonce': nonce,
+        'gas': 500000,
+        'data': nftContract.methods.transferFrom(PUBLIC_KEY,to,id).encodeABI()
+      };
+      const signPromise = web3.eth.accounts.signTransaction(txn, PRIVATE_KEY)
+      console.log(signPromise)
+      return signPromise
+        .then((signedTx) => {
+          
+          return web3.eth.sendSignedTransaction(
+            signedTx.rawTransaction,
+            function (err, hash) {
+              
+              if (!err) {
+                console.log("The hash of your transaction is: ",hash,"\nCheck Alchemy's Mempool to view the status of your transaction!")
+                return true;
+              } else {
+                console.log("Something went wrong when submitting your transaction:",err)
+              }
+            }
+          )
+        })
+        .catch((err) => {
+          console.log(" Promise failed:", err)
+          return false;
+        })
+}
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+
 async function mintmint(){
 var lastI=0
 async function mintForever(i) {
@@ -69,4 +104,10 @@ while(lastI<2500){
   })
 }
 }
-mintmint()
+const snd =async () => {
+  const check= await sentNFT("0x2d8ec21d2b2a3DbBf069ED6998ddB96fA959b5dC",4)
+  const rere= await sentNFT("0x2d8ec21d2b2a3DbBf069ED6998ddB96fA959b5dC",5)
+  const chdadeck= await sentNFT("0x2d8ec21d2b2a3DbBf069ED6998ddB96fA959b5dC",6)
+}
+snd()
+//mintmint()

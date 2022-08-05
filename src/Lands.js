@@ -1,21 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Land from "./Land.js"
-//import { ChainHandler } from "./ContractFuncs.js"
-// import {
-//     connectWallet,
-//     getCurrentWalletConnected,
-//     loadContractName,
-//     loadContractSymbol,
-//     loadContractTotalSupply,
-//     loadContractDecimals,
-//     getAccountBalance,
-//     transferBalance
-//   } from "./util/interaction.js";
-
-//const handler = new ChainHandler()
-var currentUser=sessionStorage.getItem('username')
+import Handler from './Handler.js'
 
 function Lands(userName) {
+    const handy = new Handler(userName)
+    //const currentUser=sessionStorage.getItem('username')
     function distTokens(){
         //await handler.kingGivingBack(currentUser)
     }
@@ -45,7 +34,7 @@ function Lands(userName) {
 
     const lands = createLands(50)
     useEffect(() => {
-        distTokens()
+        
     }, [])
 
   return (
