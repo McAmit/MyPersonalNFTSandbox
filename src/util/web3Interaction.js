@@ -14,8 +14,7 @@ const nftABIJson = require("../abi.json")
 const NFTABI=nftABIJson.abi
 const nftAddress = "0xA54b28279C6FeB36A695Db9F98b41F3f1dE7c75f"
 
-console.log('Alchemy Key - ' + alchemyKey)
-console.log('Contract Address - ' + contractAddress)
+
 
 export const tokenContract = new web3.eth.Contract(
   contractABI,
@@ -28,14 +27,15 @@ export const NFTContract = new web3.eth.Contract(
 
 
 export const loadContractDecimals =  () => {
+  console.log('Alchemy Key - ' + alchemyKey)
+ console.log('Contract Address - ' + contractAddress)//
   return tokenContract.methods.decimals().call();
 };
 
 
 export const getAccountBalance = (address) => {
 
-  const message = tokenContract.methods.balanceOf(address).call();
-  return message;
+  return tokenContract.methods.balanceOf(address).call(); 
 
 };
 
@@ -52,7 +52,7 @@ export const transferTokens = (address, transferAddress, amount) => { // Transfe
   const transactionParameters = {
     to: contractAddress, // Required except during contract publications.
     from: address, // must match user's active address.
-    data: tokenContract.methods.transfer(transferAddress, amount).encodeABI(),
+    data: tokenContract.methods.transferFrom(address,transferAddress, amount).encodeABI(),
   };
 
   //sign the transaction

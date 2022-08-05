@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Popup from 'reactjs-popup';
 import {useHistory} from 'react-router-dom';
-
+import {
+  transferNFT,
+  tokenContract
+} from './util/web3Interaction.js'
 const ethers = require("ethers")
 const contract = require("./abi.json")
 const nftABI = contract.abi
@@ -14,6 +17,7 @@ const nftContract = new ethers.Contract(nftAddress,nftABI,provider)
 
 const ownerAddress = "0xEEd4028BeF9DC4E72Aa809954ccbd0a85d2d855C"
 var currentUser=sessionStorage.getItem('username')
+
 
 function getAddress(id) {
     return nftContract.ownerOf(id).then(owner => owner)
@@ -40,15 +44,17 @@ function Land({x, y, uKeytd, isOpen}) {
       const nav=useHistory()
 
       const PopUp = () => {
+        const [isForSale, setIsForSale] = useState(false)
         const [thereIsGame,setThereIsGame]=useState(() => {return false}) 
         const [selectedValueGameInsert, setSelectedValueGameInsert] = useState(()=> {return "there is no game in this land"})
-        const [ownerAddressLand, setAddress] = useState("")
-        const [price,setPrice] = useState(5)
+        const [landLord, setLandLord] = useState("")
+        const [price, setPrice] = useState(5)
+        const [priceForSale, setPriceForSale] = useState(0)
 
         function checkIfImOwner(){
           console.log("currentUser: ", currentUser)
-          console.log("Owner: ", ownerAddressLand.toLowerCase())
-          if(currentUser === ownerAddressLand.toLowerCase()){  
+          console.log("Owner: ", landLord.toLowerCase())
+          if(currentUser === landLord.toLowerCase()){  
             return true
           }
           return false
@@ -59,6 +65,56 @@ function Land({x, y, uKeytd, isOpen}) {
             document.getElementById("priceMessage").innerText="Cannot change the price of a land you do not own"
           else{
             setPrice(num)
+          }
+        }
+
+        function possibleToBuy(){
+          if (checkBalance(currentUser) >= price+gas){
+            return true
+          }
+          return false
+        }
+        function metaMaskBuy(){
+          const buyButton = document.getElementById('button2');
+          let fixedAmount = price*10**8
+          console.log(tokenContract)
+          if(buyButton)
+          buyButton.addEventListener('click',()=>{ethereum.request({
+              method: 'eth_sendTransaction',
+              params: [ 
+                {
+                  nonce:"0x00",
+                  from : currentUser,
+                  to : tokenContract,
+                  gasPrice : "",
+                  gas : "",
+                  data : tokenContract.methods.transfer(landLord, fixedAmount).encodeABI(),
+                },
+              ],
+            }).then((txHash) => console.log(txHash))
+            .catch((error) => console.error)
+          })
+        }
+
+        function onClickBuy(){
+          if(isForSale){
+            //if(possibleToBuy(currentUser)){
+              metaMaskBuy()
+            //}
+            //else{
+             // document.getElementById("").innerText="You don't have enough money"
+           // }
+          }
+        }
+      
+
+        function onClickSell(priceForSale){
+          if(checkIfImOwner()){
+            document.getElementById("Price").innerText = "Price: "+ priceForSale
+            setIsForSale(true)
+          }
+          else{
+            document.getElementById("msgSale").innerText = "Sorry, You are not the owner of this Land"
           }
         }
 
@@ -88,10 +144,34 @@ function Land({x, y, uKeytd, isOpen}) {
           }
         }
 
+        function showIsForSale(){
+          if(isForSale){
+            return "true"
+          }else {
+            return "false"
+          }
+        }
+
+        function showIsGameExist(){
+          if(thereIsGame){
+            return "true"
+          }else {
+            return "false"
+          }
+        }
+
+        function checkForSale(){
+          if(isForSale){
+            document.getElementById('butPrice').innerHTML = "this Land for Sale"
+          }
+        }
+
         useEffect(() => {
           getAddress(uKeytd).then(addressFromContract => {
-            setAddress(addressFromContract)
+            setLandLord(addressFromContract)
           })
+          if (uKeytd>3 || uKeytd<6)
+            setIsForSale(true)
         }, [])
 
         return (
@@ -113,14 +193,17 @@ function Land({x, y, uKeytd, isOpen}) {
                   <br></br>
                   <b>ID: </b>#{uKeytd+1}
                   <br></br>
-                  <b>Owner: </b>{ownerAddressLand.toLowerCase()}
+                  <b>Owner: </b>{landLord.toLowerCase()}
                   <br></br>
                   <b>Price in DNA Tokens: </b>{price}
                   <br></br>
                   <b id="priceMessage"></b>
                   <br></br>
-                  <b>Game exist:</b> No
-  
+                  <b>Game exist:</b> {showIsGameExist()} 
+                  <br></br>
+                  <b>For Sale:</b> {showIsForSale()}
+                  <br></br>
+                  <p id="Price"><b id="Price">Price:</b> Not for Sale</p> 
                 </div>
                 <div><br></br></div>
                 <div className="actions">
@@ -134,8 +217,7 @@ function Land({x, y, uKeytd, isOpen}) {
                     <button onClick={close}>&times;</button>
                     <h2 className='header'> Buy </h2>
                     <h2>Do you want to buy?</h2>
-                    <p id="butPrice"></p>
-                    <button id="button2">Buy</button>
+                    <button id="button2" className="buyTxnEth" disabled={!isForSale} onClick={()=> onClickBuy()}>Buy</button>
                   </div>
                     )}
                   </Popup>
@@ -148,9 +230,10 @@ function Land({x, y, uKeytd, isOpen}) {
                     {close => (<div className="modal" id="popup">
                     <button onClick={close}>&times;</button>
                     <h2 className='header'> Sell </h2>
-                    <input id="sellPrice" placeholder='Set a Price'></input>
+                    <input id="sellPrice" placeholder='Set a Price' onChange={e => setPriceForSale(e.target.value)}></input>
                     <br></br>
-                    <button id="button2">Submit</button>
+                    <button id="button2" onClick={() => onClickSell(priceForSale)}>Submit</button>
+                    <p id="msgSale"></p>
                   </div>
                     )}
                   </Popup>

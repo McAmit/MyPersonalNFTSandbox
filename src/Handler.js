@@ -11,9 +11,9 @@ import {
         console.log("arrived handler")
         this.myAddress=address
         this.myBalance = 0;
-        // getAccountBalance(this.myAddress).then(balance=>{
-        //     this.myBalance=balance
-        // })
+        getAccountBalance(this.myAddress).then(balance=>{
+            this.myBalance=balance
+        })
 
         //if(this.myBalance === 0)
             //distributeTokens(this.myAddress,100*(10**decimals))

@@ -3,7 +3,7 @@ import Land from "./Land.js"
 import Handler from './Handler.js'
 
 function Lands(userName) {
-    const handy = new Handler(userName)
+    //const handy = new Handler(userName)
     //const currentUser=sessionStorage.getItem('username')
     function distTokens(){
         //await handler.kingGivingBack(currentUser)
