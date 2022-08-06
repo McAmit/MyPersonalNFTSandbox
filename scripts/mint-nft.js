@@ -105,9 +105,17 @@ while(lastI<2500){
 }
 }
 const snd =async () => {
-  const chdadeck= await sentNFT("0x4d7EcF86c524D2F35dAd57879e387cBE1F14e48a",13)
-  const chdadeck2= await sentNFT("0x4d7EcF86c524D2F35dAd57879e387cBE1F14e48a",14)
-  const chdadeck3= await sentNFT("0x4d7EcF86c524D2F35dAd57879e387cBE1F14e48a",15)
+  let endFor=436
+  for(let i=411;i<endFor;i++){
+    const chdadeck = await sentNFT("0x4d7EcF86c524D2F35dAd57879e387cBE1F14e48a",i)
+    if(endFor===435){
+      endFor=486
+      i=461
+    }
+  }
+  
+  // const chdadeck2= await sentNFT("0x4d7EcF86c524D2F35dAd57879e387cBE1F14e48a",14)
+  // const chdadeck3= await sentNFT("0x4d7EcF86c524D2F35dAd57879e387cBE1F14e48a",15)
 }
 snd()
 //mintmint()

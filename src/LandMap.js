@@ -20,7 +20,7 @@ const LandMap = (userName) => {
       yMax:0
     }
   return (
-    <MapInteractionCSS defaultValue={value} showControls disablePan translationBounds={bounds} minScale={0.1} maxScale={0.15}>
+    <MapInteractionCSS defaultValue={value} showControls disablePan translationBounds={bounds} minScale={0.1} maxScale={0.27}>
         
       <Lands userName={userName}/>
     </MapInteractionCSS>

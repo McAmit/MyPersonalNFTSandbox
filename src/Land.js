@@ -18,7 +18,8 @@ const nftContract = new ethers.Contract(nftAddress,nftABI,signer)
 
 const ownerAddress = "0xEEd4028BeF9DC4E72Aa809954ccbd0a85d2d855C"
 
-const openSaleKey = 'openSale';
+const openSaleKey = 'openSale'
+const gameKey = 'savedGames'
 
 function getAddress(id) {
   console.log("ID: ",id)
@@ -30,54 +31,68 @@ function getInitializeSale() {
   if (!sale) {
       return JSON.stringify({})
   }
-  return JSON.parse(sale);
+  return JSON.parse(sale)
+}
+function getInitialGames(){
+  const game = localStorage.getItem(gameKey)
+  if(!game){
+    return JSON.stringify({})
+  }
+  return JSON.parse(game)
 }
 
-function getItem(key)  {
-  const itemString = localStorage.getItem(openSaleKey);
+function getItem(key,mapKey)  {
+  const itemString = localStorage.getItem(mapKey);
   if(!itemString) {
     return null
   }
   return JSON.parse(itemString)[key]
 }
 
-function setItem(item) {
-  const saleString = localStorage.getItem(openSaleKey)
+function setItem(item,mapKey) {
+  const saleString = localStorage.getItem(mapKey)
   if(saleString){
     try {
       const sale = JSON.parse(saleString)
       sale[item.id] = item
-      localStorage.setItem(openSaleKey, JSON.stringify(sale))
+      localStorage.setItem(mapKey, JSON.stringify(sale))
     } catch (e) {
       console.log(e)
     }
   }else {
     const sale=JSON.parse('{}')
     sale[item.id]=item
-    localStorage.setItem(openSaleKey, JSON.stringify(sale))
+    localStorage.setItem(mapKey, JSON.stringify(sale))
   }
   
   
 }
 
 
-function removeItem(id) {
+function removeItem(id,mapKey) {
   const sale = getInitializeSale()
   if (sale[id]) {
     delete sale[id]
-    localStorage.setItem('openSale', JSON.stringify(sale))
+    localStorage.setItem(mapKey, JSON.stringify(sale))
   }
 }
 
 
 function Land({x, y, uKeytd, isOpen}) {
-      const [showPopup, setShowPopup] = useState(false);
+      const [showPopup, setShowPopup] = useState(false)
+      const [thereIsGame,setThereIsGame]=useState(false) 
       const nav=useHistory()
       
+      useEffect(() => {
+          const game = getItem(uKeytd,gameKey)
+          if(game){
+            setThereIsGame(true)
+          }
+      })
+
       const PopUp = () => {
         const [isForSale, setIsForSale] = useState(false)
-        const [thereIsGame,setThereIsGame]=useState(() => {return false}) 
-        const [selectedValueGameInsert, setSelectedValueGameInsert] = useState(()=> {return "there is no game in this land"})
+        const [selectedValueGameInsert, setSelectedValueGameInsert] = useState(getInitialGames())
         const [ownerAddressLand, setAddress] = useState("")
         const [currentUser,setCurrentUser]=useState(sessionStorage.getItem('username'))
         const [openSales,setOpenSales]=useState(getInitializeSale())
@@ -93,14 +108,6 @@ function Land({x, y, uKeytd, isOpen}) {
             return true
           }
           return false
-        }
-
-        function priceSet(num){
-          if(!checkIfImOwner())
-            document.getElementById("priceMessage").innerText="Cannot change the price of a land you do not own"
-          else{
-            setPrice(num)
-          }
         }
 
         function possibleToBuy(){
@@ -127,20 +134,20 @@ function Land({x, y, uKeytd, isOpen}) {
           if(isForSale){
             //console.log(possibleToBuy())
             if(possibleToBuy()){
-              const item=getItem(uKeytd)
+              const item=getItem(uKeytd,openSaleKey)
               console.log("token: ", balanceDNA)
               transferTokens(currentUser,item.address,BigInt(priceForSale*10**18)).then((tx)=>{
                 console.log("token transfer hash: ",tx)
                 distributeNFT(currentUser,uKeytd).then((nftTxn)=>{
                   console.log("NFT hash: ",nftTxn)
-                  removeItem(uKeytd)
+                  removeItem(uKeytd,openSaleKey)
                   setPriceForSale()
                   setIsForSale(false)
                 })
               })
             }
             else{
-              // document.getElementById("").innerText="You don't have enough money"
+               //document.getElementById("").innerText="You don't have enough money"
             }
           }
         }
@@ -150,22 +157,22 @@ function Land({x, y, uKeytd, isOpen}) {
           if(checkIfImOwner()) {
             
             if(currentUser.toLowerCase() !== ownerAddress.toLowerCase()) {
-              if(!getItem(uKeytd)){
+              if(!getItem(uKeytd,openSaleKey)){
               transferNFT(currentUser, ownerAddress, uKeytd).then(txn=>{
                 setIsForSale(true) 
                 console.log('item saved', txn)
-                setItem({id: uKeytd, address:currentUser,requiredPrice:priceForSale})
+                setItem({id: uKeytd, address:currentUser,requiredPrice:priceForSale},openSaleKey)
 
               }) 
               }else{
                 setIsForSale(true)
-                setItem({id: uKeytd, address:currentUser,requiredPrice:priceForSale})
+                setItem({id: uKeytd, address:currentUser,requiredPrice:priceForSale},openSaleKey)
               }
             }
             else {
               setIsForSale(true)
               console.log('item saved')
-              setItem({id: uKeytd, address:currentUser,requiredPrice:priceForSale})
+              setItem({id: uKeytd, address:currentUser,requiredPrice:priceForSale},openSaleKey)
             }
           }
           else{
@@ -174,9 +181,9 @@ function Land({x, y, uKeytd, isOpen}) {
         }
 
         function onClickPlay(){
-          if (selectedValueGameInsert === "Connect4")
+          if (selectedValueGameInsert[uKeytd].str === "Connect4")
             nav.push("./user/connect4/")
-          else if (selectedValueGameInsert === "Tic-Tac-Toe"){
+          else if (selectedValueGameInsert[uKeytd].str === "Tic-Tac-Toe"){
             nav.push("./user/tictactoe/")
           }
         }
@@ -192,10 +199,15 @@ function Land({x, y, uKeytd, isOpen}) {
           }
         }
 
-        function handleSelectedValueGameInsert(e){
+        function handleSelectedValueGameInsert(e,uniqueID){
           if(checkIfImOwner(uKeytd)){
-            console.log("e: ", e.target.value)
-            setSelectedValueGameInsert(e.target.value)
+            if(e.target.value==="ChooseGame"){
+              document.getElementById('addedGame').innerHTML = "Choose a game to Add!"
+            }
+            const value = {id:uniqueID,str:e.target.value}
+            console.log("e: ",value )
+            setSelectedValueGameInsert(value)
+            setItem(value,gameKey)
           }
         }
         function checkBalanceDNA(){
@@ -225,19 +237,19 @@ function Land({x, y, uKeytd, isOpen}) {
             return "false"
           }
         }
-
-        function checkForSale(){
-          if(isForSale){
-            document.getElementById('butPrice').innerHTML = "this Land for Sale"
-          }
+        function gameStringMaker(){
+          if(thereIsGame)
+            return selectedValueGameInsert[uKeytd].str
+          return "No Game in this Land's DNA"
         }
+
 
         useEffect(() => {
           window.ethereum.request({ method: 'eth_accounts' }).then(acc=>{
-            console.log("Acc in useeffect: ",acc)
+            console.log("Active User: ",acc)
             setCurrentUser(acc[0])
           })
-            const item = getItem(uKeytd)
+            const item = getItem(uKeytd,openSaleKey)
             console.log("Item from localStorage ", item)
             if (item) {
               setAddress(item.address.toLowerCase())
@@ -248,9 +260,10 @@ function Land({x, y, uKeytd, isOpen}) {
                 setAddress(addressFromContract.toLowerCase())
               })
             }
+            const game = getItem(uKeytd,gameKey)
+
           
-          if(uKeytd<10&&uKeytd>0)
-          setIsForSale(true)
+          
         }, [])
 
         return (
@@ -325,7 +338,7 @@ function Land({x, y, uKeytd, isOpen}) {
                         {close => (<div className="modal" id="popup">
                         <button onClick={close}>&times;</button>
                         <h2 className='header'> Start a Game </h2>
-                        <h3>{selectedValueGameInsert}</h3>
+                        <h3>{gameStringMaker()}</h3>
                         <button id="button2" onClick={() => onClickPlay()}>Play</button>
                       </div>
                         )}
@@ -339,7 +352,8 @@ function Land({x, y, uKeytd, isOpen}) {
                         {close => (<div className="modal" id="popup">
                         <button onClick={close}>&times;</button>
                         <h2 className='header'> Choose a Game </h2>
-                        <select defaultValue={"Tic-Tac-Toe"} id="SelectGames" name="Games" onChange={e => handleSelectedValueGameInsert(e)}>
+                        <select defaultValue={"ChooseGame"} id="SelectGames" name="Games" onChange={e => handleSelectedValueGameInsert(e,uKeytd)}>
+                          <option value="ChooseGame">ChooseGame</option>
                           <option value="Tic-Tac-Toe">Tic-Tac-Toe</option>
                           <option value="Connect4">Connect4</option>
                         </select>
@@ -370,7 +384,7 @@ function Land({x, y, uKeytd, isOpen}) {
         return (<td className='td' id="green" key={"td"+uKeytd}></td>)
     }
     // insert NFT:
-    else if(x===0 & y===0){ // Need to implement a game and change the land when the owner decided 
+    else if(thereIsGame){  
       return (<td onClick={onClickLand} className='td' id="purple" key={"td"+uKeytd}>{showPopup && <PopUp />}</td>)
     }
     else {

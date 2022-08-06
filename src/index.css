@@ -77,6 +77,11 @@ button:disabled,
 .td, .th{
   border: 2px solid #ddd;
   padding: 50px;
+  text-align: center;
+  
+}
+.td:hover{
+  background-color: coral;
 }
 
 .button {
