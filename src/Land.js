@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import Popup from 'reactjs-popup';
-import { BigNumber } from 'ethers';
 import {useHistory} from 'react-router-dom';
-import {
-  transferNFT,
-  tokenContract
-} from './util/web3Interaction.js'
+import { getAccountBalance,
+   tokenContract,
+    transferNFT,
+     distributeTokens} from './util/web3Interaction.js'
 const ethers = require("ethers")
 const contract = require("./abi.json")
 const nftABI = contract.abi
@@ -14,11 +13,10 @@ const nftAddress = "0xA54b28279C6FeB36A695Db9F98b41F3f1dE7c75f"
 const provider = new ethers.providers.Web3Provider(window.ethereum)
 const signer = provider.getSigner()
 
-const nftContract = new ethers.Contract(nftAddress,nftABI,provider)
+const nftContract = new ethers.Contract(nftAddress,nftABI,signer)
 
 const ownerAddress = "0xEEd4028BeF9DC4E72Aa809954ccbd0a85d2d855C"
 var currentUser=sessionStorage.getItem('username')
-
 
 function getAddress(id) {
     return nftContract.ownerOf(id).then(owner => owner)
@@ -48,14 +46,17 @@ function Land({x, y, uKeytd, isOpen}) {
         const [isForSale, setIsForSale] = useState(false)
         const [thereIsGame,setThereIsGame]=useState(() => {return false}) 
         const [selectedValueGameInsert, setSelectedValueGameInsert] = useState(()=> {return "there is no game in this land"})
-        const [landLord, setLandLord] = useState("")
+        const [ownerAddressLand, setAddress] = useState("")
         const [price, setPrice] = useState(5)
         const [priceForSale, setPriceForSale] = useState(0)
-
+        const [balanceETH, setBalanceETH] = useState(0)
+        const [balanceDNA, setBalanceDNA] = useState(0)
+        checkBalanceDNA()
+        checkBalanceETH()
         function checkIfImOwner(){
           console.log("currentUser: ", currentUser)
-          console.log("Owner: ", landLord.toLowerCase())
-          if(currentUser === landLord.toLowerCase()){  
+          console.log("Owner: ", ownerAddressLand.toLowerCase())
+          if(currentUser === ownerAddressLand.toLowerCase()){  
             return true
           }
           return false
@@ -70,44 +71,35 @@ function Land({x, y, uKeytd, isOpen}) {
         }
 
         function possibleToBuy(){
-          if (checkBalance(currentUser) >= price+gas){
+          let gasPrice = 100000 // wie
+          if ((balanceETH >= gasPrice)){
             return true
           }
           return false
         }
-        function metaMaskBuy(){
-          const buyButton = document.getElementById('button2');
-          let decimals = BigNumber.from(10**8)
-          ethereum.request({ method: 'eth_requestAccounts' }).then(accounts =>{
-            console.log(accounts[0])
-          }).catch(error => {console.log(error)})
-          console.log(tokenContract)
-          if(buyButton)
-          buyButton.addEventListener('click',()=>{ethereum.request({
-              method: 'eth_sendTransaction',
-              params: [ 
-                {
-                  nonce:"0x00",
-                  from : currentUser,
-                  to : tokenContract,
-                  gasPrice : 50000,
-                  gas : 25000,
-                  data : tokenContract.methods.transfer(landLord, decimals*100).encodeABI(),
-                },
-              ],
-            }).then((txHash) => console.log(txHash))
-            .catch((error) => console.log("this is the catch",error))
-          })
+
+        function distTokens(){
+          if(balanceDNA === "0"){
+            let number = BigInt(100*10**18)
+            console.log(number)
+            distributeTokens(currentUser, number).then((tx)=> {console.log(tx,"\n 100 DNA added to: ",currentUser)})
+          } else {
+            console.log("Current Buyer has ",balanceDNA," DNATokens at the moment")
+          }
         }
 
         function onClickBuy(){
+          distTokens()
           if(isForSale){
-            //if(possibleToBuy(currentUser)){
-              metaMaskBuy()
-            //}
-            //else{
-             // document.getElementById("").innerText="You don't have enough money"
-           // }
+            console.log(possibleToBuy())
+            if(possibleToBuy()){
+              console.log("token: ", balanceDNA)
+              
+              // transferNFT(currentUser, ownerAddressLand, uKeytd)
+            }
+            else{
+              // document.getElementById("").innerText="You don't have enough money"
+            }
           }
         }
       
@@ -131,7 +123,7 @@ function Land({x, y, uKeytd, isOpen}) {
         }
 
         function addGameToLand(e){
-          if(checkIfImOwner(uKeytd+1)){
+          if(checkIfImOwner(uKeytd)){
             setThereIsGame(true)
             console.log(thereIsGame)
             document.getElementById('addedGame').innerHTML = "Game Added!"
@@ -142,10 +134,21 @@ function Land({x, y, uKeytd, isOpen}) {
         }
 
         function handleSelectedValueGameInsert(e){
-          if(checkIfImOwner(uKeytd+1)){
+          if(checkIfImOwner(uKeytd)){
             console.log("e: ", e.target.value)
             setSelectedValueGameInsert(e.target.value)
           }
+        }
+        function checkBalanceDNA(){
+          getAccountBalance(currentUser).then(
+            balance => {setBalanceDNA(balance.substr(0,balance.length-18))})
+        }
+
+        function checkBalanceETH(){
+          window.ethereum.request({
+            method: "eth_getBalance",
+            params: [currentUser, "latest"]
+          }).then(balance => {setBalanceETH(balance)})
         }
 
         function showIsForSale(){
@@ -154,12 +157,6 @@ function Land({x, y, uKeytd, isOpen}) {
           }else {
             return "false"
           }
-        }
-        function checkBalance(){
-          window.ethereum.request({
-            method: "eth_getBalance",
-            params: [currentUser, "latest"]
-          }).then(balance => {setBalance(balance)})
         }
 
         function showIsGameExist(){
@@ -178,10 +175,10 @@ function Land({x, y, uKeytd, isOpen}) {
 
         useEffect(() => {
           getAddress(uKeytd).then(addressFromContract => {
-            setLandLord(addressFromContract)
+            setAddress(addressFromContract)
           })
-          if (uKeytd>3 || uKeytd<6)
-            setIsForSale(true)
+          if(uKeytd<10&&uKeytd>0)
+          setIsForSale(true)
         }, [])
 
         return (
@@ -201,9 +198,9 @@ function Land({x, y, uKeytd, isOpen}) {
                 <div className="content">
                   <b>Index Location:</b> ({x}, {y})
                   <br></br>
-                  <b>ID: </b>#{uKeytd+1}
+                  <b>ID: </b>#{uKeytd}
                   <br></br>
-                  <b>Owner: </b>{landLord.toLowerCase()}
+                  <b>Owner: </b>{ownerAddressLand.toLowerCase()}
                   <br></br>
                   <b>Price in DNA Tokens: </b>{price}
                   <br></br>
@@ -227,7 +224,7 @@ function Land({x, y, uKeytd, isOpen}) {
                     <button onClick={close}>&times;</button>
                     <h2 className='header'> Buy </h2>
                     <h2>Do you want to buy?</h2>
-                    <button id="button2" className="buyTxnEth" disabled={!isForSale} onClick={()=> onClickBuy()}>Buy</button>
+                    <button id="button2" disabled={!isForSale} onClick={()=> onClickBuy()}>Buy</button>
                   </div>
                     )}
                   </Popup>

@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Land from "./Land.js"
-import Handler from './Handler.js'
 
 function Lands(userName) {
-    //const handy = new Handler(userName)
-    //const currentUser=sessionStorage.getItem('username')
-    function distTokens(){
-        //await handler.kingGivingBack(currentUser)
-    }
+
     let uKeytd = 0 // unique key - td
-    // let uKeytr = 0 // unique key - tr
 
     function createRowLands(x, totalRowLands){
         let landsByRow = []
@@ -33,9 +27,6 @@ function Lands(userName) {
 
 
     const lands = createLands(50)
-    useEffect(() => {
-        
-    }, [])
 
   return (
     <div>
