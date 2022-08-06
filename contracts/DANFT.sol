@@ -46,8 +46,8 @@ contract DANFT is ERC721URIStorage, Ownable {
 
 contract DAToken is ERC20{
         
-    constructor(uint256 initial_supply)  ERC20("Dvir And Amit Token","DNA"){
-        _mint(msg.sender,initial_supply);
+    constructor()  ERC20("Dvir And Amit Token","DNA"){
+        _mint(msg.sender,1000000*10**18); // 1m tokens, decimals are 18
     }
 
 

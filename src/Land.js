@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import Popup from 'reactjs-popup';
 import {useHistory} from 'react-router-dom';
 import { getAccountBalance,
-   tokenContract,
     transferNFT,
-     distributeTokens} from './util/web3Interaction.js'
+    distributeNFT,
+     distributeTokens,
+    transferTokens} from './util/web3Interaction.js'
 const ethers = require("ethers")
 const contract = require("./abi.json")
 const nftABI = contract.abi
@@ -16,46 +17,78 @@ const signer = provider.getSigner()
 const nftContract = new ethers.Contract(nftAddress,nftABI,signer)
 
 const ownerAddress = "0xEEd4028BeF9DC4E72Aa809954ccbd0a85d2d855C"
-var currentUser=sessionStorage.getItem('username')
+
+const openSaleKey = 'openSale';
 
 function getAddress(id) {
+  console.log("ID: ",id)
     return nftContract.ownerOf(id).then(owner => owner)
 }
-function buyLand(landID){
-  if(!isUser())
-    return "only Metamask users can buy!"
-  if(checkIfImOwner())
-    return "This land is already yours!"
-  else {
-    // make TXN
+
+function getInitializeSale() {
+  const sale = localStorage.getItem(openSaleKey)
+  if (!sale) {
+      return JSON.stringify({})
   }
-
+  return JSON.parse(sale);
 }
 
-function isUser(){ 
-  if(currentUser!=="undefined") 
-    return false
-  return true
+function getItem(key)  {
+  const itemString = localStorage.getItem(openSaleKey);
+  if(!itemString) {
+    return null
+  }
+  return JSON.parse(itemString)[key]
 }
+
+function setItem(item) {
+  const saleString = localStorage.getItem(openSaleKey)
+  if(saleString){
+    try {
+      const sale = JSON.parse(saleString)
+      sale[item.id] = item
+      localStorage.setItem(openSaleKey, JSON.stringify(sale))
+    } catch (e) {
+      console.log(e)
+    }
+  }else {
+    const sale=JSON.parse('{}')
+    sale[item.id]=item
+    localStorage.setItem(openSaleKey, JSON.stringify(sale))
+  }
+  
+  
+}
+
+
+function removeItem(id) {
+  const sale = getInitializeSale()
+  if (sale[id]) {
+    delete sale[id]
+    localStorage.setItem('openSale', JSON.stringify(sale))
+  }
+}
+
 
 function Land({x, y, uKeytd, isOpen}) {
       const [showPopup, setShowPopup] = useState(false);
       const nav=useHistory()
-
+      
       const PopUp = () => {
         const [isForSale, setIsForSale] = useState(false)
         const [thereIsGame,setThereIsGame]=useState(() => {return false}) 
         const [selectedValueGameInsert, setSelectedValueGameInsert] = useState(()=> {return "there is no game in this land"})
         const [ownerAddressLand, setAddress] = useState("")
-        const [price, setPrice] = useState(5)
-        const [priceForSale, setPriceForSale] = useState(0)
+        const [currentUser,setCurrentUser]=useState(sessionStorage.getItem('username'))
+        const [openSales,setOpenSales]=useState(getInitializeSale())
+        const [priceForSale, setPriceForSale] = useState()
         const [balanceETH, setBalanceETH] = useState(0)
         const [balanceDNA, setBalanceDNA] = useState(0)
         checkBalanceDNA()
         checkBalanceETH()
         function checkIfImOwner(){
-          console.log("currentUser: ", currentUser)
-          console.log("Owner: ", ownerAddressLand.toLowerCase())
+          console.log("me",currentUser)
+          console.log("compareto",ownerAddressLand)
           if(currentUser === ownerAddressLand.toLowerCase()){  
             return true
           }
@@ -72,14 +105,15 @@ function Land({x, y, uKeytd, isOpen}) {
 
         function possibleToBuy(){
           let gasPrice = 100000 // wie
-          if ((balanceETH >= gasPrice)){
+          if(balanceDNA!=="0")
+          if ((balanceETH >= gasPrice &&priceForSale<=parseInt(balanceDNA))){
             return true
           }
           return false
         }
 
         function distTokens(){
-          if(balanceDNA === "0"){
+          if(!balanceDNA){
             let number = BigInt(100*10**18)
             console.log(number)
             distributeTokens(currentUser, number).then((tx)=> {console.log(tx,"\n 100 DNA added to: ",currentUser)})
@@ -91,11 +125,19 @@ function Land({x, y, uKeytd, isOpen}) {
         function onClickBuy(){
           distTokens()
           if(isForSale){
-            console.log(possibleToBuy())
+            //console.log(possibleToBuy())
             if(possibleToBuy()){
+              const item=getItem(uKeytd)
               console.log("token: ", balanceDNA)
-              
-              // transferNFT(currentUser, ownerAddressLand, uKeytd)
+              transferTokens(currentUser,item.address,BigInt(priceForSale*10**18)).then((tx)=>{
+                console.log("token transfer hash: ",tx)
+                distributeNFT(currentUser,uKeytd).then((nftTxn)=>{
+                  console.log("NFT hash: ",nftTxn)
+                  removeItem(uKeytd)
+                  setPriceForSale()
+                  setIsForSale(false)
+                })
+              })
             }
             else{
               // document.getElementById("").innerText="You don't have enough money"
@@ -104,10 +146,27 @@ function Land({x, y, uKeytd, isOpen}) {
         }
       
 
-        function onClickSell(priceForSale){
-          if(checkIfImOwner()){
-            document.getElementById("Price").innerText = "Price: "+ priceForSale
-            setIsForSale(true)
+        function onClickSell(){
+          if(checkIfImOwner()) {
+            
+            if(currentUser.toLowerCase() !== ownerAddress.toLowerCase()) {
+              if(!getItem(uKeytd)){
+              transferNFT(currentUser, ownerAddress, uKeytd).then(txn=>{
+                setIsForSale(true) 
+                console.log('item saved', txn)
+                setItem({id: uKeytd, address:currentUser,requiredPrice:priceForSale})
+
+              }) 
+              }else{
+                setIsForSale(true)
+                setItem({id: uKeytd, address:currentUser,requiredPrice:priceForSale})
+              }
+            }
+            else {
+              setIsForSale(true)
+              console.log('item saved')
+              setItem({id: uKeytd, address:currentUser,requiredPrice:priceForSale})
+            }
           }
           else{
             document.getElementById("msgSale").innerText = "Sorry, You are not the owner of this Land"
@@ -174,9 +233,22 @@ function Land({x, y, uKeytd, isOpen}) {
         }
 
         useEffect(() => {
-          getAddress(uKeytd).then(addressFromContract => {
-            setAddress(addressFromContract)
+          window.ethereum.request({ method: 'eth_accounts' }).then(acc=>{
+            console.log("Acc in useeffect: ",acc)
+            setCurrentUser(acc[0])
           })
+            const item = getItem(uKeytd)
+            console.log("Item from localStorage ", item)
+            if (item) {
+              setAddress(item.address.toLowerCase())
+              setPriceForSale(item.requiredPrice)
+              setIsForSale(true)
+            } else {
+              getAddress(uKeytd).then(addressFromContract => {
+                setAddress(addressFromContract.toLowerCase())
+              })
+            }
+          
           if(uKeytd<10&&uKeytd>0)
           setIsForSale(true)
         }, [])
@@ -202,7 +274,6 @@ function Land({x, y, uKeytd, isOpen}) {
                   <br></br>
                   <b>Owner: </b>{ownerAddressLand.toLowerCase()}
                   <br></br>
-                  <b>Price in DNA Tokens: </b>{price}
                   <br></br>
                   <b id="priceMessage"></b>
                   <br></br>
@@ -210,7 +281,7 @@ function Land({x, y, uKeytd, isOpen}) {
                   <br></br>
                   <b>For Sale:</b> {showIsForSale()}
                   <br></br>
-                  <p id="Price"><b id="Price">Price:</b> Not for Sale</p> 
+                  <p id="Price"><b id="Price">Price in DNA Tokens:</b>{priceForSale ? `${priceForSale}`  : 'Not for Sale'}</p> 
                 </div>
                 <div><br></br></div>
                 <div className="actions">

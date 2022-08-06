@@ -23,18 +23,6 @@ const initialize = () => {
     onboarding.startOnboarding();
   };
 
-  const onClickConnect = () => {
-      // Will open the MetaMask UI
-      
-        try {
-          onboardButton.disabled = true;
-          ethereum.request({ method: 'eth_requestAccounts' });
-
-        } catch (error) {
-          console.error(error);
-        }
-    
-  };
 
   const MetaMaskClientCheck = () => {
     //Now we check to see if Metmask is installed
@@ -48,43 +36,36 @@ const initialize = () => {
     } else {
       //If MetaMask is installed we ask the user to connect to their wallet
       onboardButton.innerText = 'Connect your MetaMask';
-      //When the button is clicked we call this function to connect the users MetaMask Wallet
-      onboardButton.onclick = onClickConnect;
-      //The button is now disabled
-      onboardButton.disabled = false;
+      onboardButton.onC
     }
   };
   
   MetaMaskClientCheck()
-  checkConnection()
 };
 
 function checkConnection() {
     
     const { ethereum } = window;
-    return ethereum.request({ method: 'eth_accounts' }).then(handleAccountsChanged).catch(console.error);
+    return ethereum.request({ method: 'eth_accounts' }).then((accounts) => {
+      return handleAccountsChanged(accounts)
+    }).catch((e)=> {
+      console.error('check connection error', e);
+    });
     // checker = true;  
 }
 
-function handleAccountsChanged(accounts) {
-  console.log(accounts);
-  let currentAccount = ""
+export function handleAccountsChanged(accounts) {
   if (accounts.length === 0) {
     console.log("You're not connected to MetaMask")
     document.getElementById('connectOrNot').innerHTML = "You are not connected to MetaMask"
-    // document.getElementById('getAccountsResult').innerHTML = ""
-
-  } else if (accounts[0] !== currentAccount) {
-    currentAccount = accounts[0];
-    // document.getElementById('getAccountsResult').innerHTML = "Account Address: "+accounts[0] || 'Not able to get accounts';
-    console.log("Connected")
-    document.getElementById('connectButton').disabled = true;
-    document.getElementById('button2').disabled = false;
-    document.getElementById('connectOrNot').innerHTML = "You are Connected as:" + currentAccount
-    sessionStorage.setItem('username', currentAccount)
-    return true
+    return false;
   }
-  
+  const account = accounts[0]
+  window.userName=account;
+  sessionStorage.setItem('username', account)
+  console.log("Connected")
+  document.getElementById('connectOrNot').innerHTML = "You are Connected as:" + account
+  return true
 }
 
 function UserLogin() {
@@ -102,6 +83,14 @@ function UserLogin() {
 
    function click() {
     initialize()
+    ethereum.request({ method: 'eth_requestAccounts' }).then(() => {
+      checkConnection().then((connected) => {
+        if (connected) {
+          setIsConnected(true)
+        }
+      })
+    })
+    
    }
    function moveOnClick() {
     nav.push("./user")
