@@ -138,16 +138,22 @@ function Land({x, y, uKeytd, isOpen}) {
               console.log("token: ", balanceDNA)
               transferTokens(currentUser,item.address,BigInt(priceForSale*10**18)).then((tx)=>{
                 console.log("token transfer hash: ",tx)
+                if(currentUser.toLowerCase!==ownerAddress.toLowerCase)
                 distributeNFT(currentUser,uKeytd).then((nftTxn)=>{
                   console.log("NFT hash: ",nftTxn)
                   removeItem(uKeytd,openSaleKey)
                   setPriceForSale()
                   setIsForSale(false)
-                })
+                }) 
+                else{
+                  removeItem(uKeytd,openSaleKey)
+                  setPriceForSale()
+                  setIsForSale(false)
+                }
               })
             }
             else{
-               //document.getElementById("").innerText="You don't have enough money"
+               document.getElementById("buybuy").innerText="You don't have enough money"
             }
           }
         }
@@ -259,11 +265,7 @@ function Land({x, y, uKeytd, isOpen}) {
               getAddress(uKeytd).then(addressFromContract => {
                 setAddress(addressFromContract.toLowerCase())
               })
-            }
-            const game = getItem(uKeytd,gameKey)
-
-          
-          
+            }        
         }, [])
 
         return (
@@ -307,7 +309,7 @@ function Land({x, y, uKeytd, isOpen}) {
                     {close => (<div className="modal" id="popup">
                     <button onClick={close}>&times;</button>
                     <h2 className='header'> Buy </h2>
-                    <h2>Do you want to buy?</h2>
+                    <h2 id="buybuy">Do you want to buy?</h2>
                     <button id="button2" disabled={!isForSale} onClick={()=> onClickBuy()}>Buy</button>
                   </div>
                     )}
