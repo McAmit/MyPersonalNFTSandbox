@@ -1,6 +1,6 @@
 const alchemyKey= "https://eth-rinkeby.alchemyapi.io/v2/SCRIwYy2WX0mP7w80_0aWuXcyg19YvOP"
-const privateKey="f22870efb7b117a303e06a8f2df17a9c9c0f9a7f414f6f58f0ba13df20088c52"
-const publicKey="0xEEd4028BeF9DC4E72Aa809954ccbd0a85d2d855C"
+const privateKey=PRIVATE_KEY
+const publicKey=PUBLIC_KEY
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey);
 
